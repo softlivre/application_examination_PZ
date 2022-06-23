@@ -25,7 +25,6 @@ class Conexao extends PDO {
     }
 }
 
-
 // in this example, we will only serve the following route:
 // api/v1/databases/3434/retail/user-promotions/redeem
 // full url: https://softlivre.com.br/provapropz/api/v1/databases/3434/retail/user-promotions/redeem
@@ -39,7 +38,7 @@ class Conexao extends PDO {
 @$route7 = htmlspecialchars($arrayRequest[9]);
 
 if ($route1 !== "v1" || $route2 !== "databases" || $route3 !== "3434" || $route4 !== "retail" || $route5 !== "user-promotions" || $route6 !== "redeem") {
-    $data = "route not implemented";
+    $data = array("response" => "route not implemented");
     echo json_encode($data);
     sleep(1); //prevent brute force finding the route
     exit;
@@ -50,7 +49,7 @@ if ($route1 !== "v1" || $route2 !== "databases" || $route3 !== "3434" || $route4
 // lets check the payload and method
 
 if ($method !== "POST"){
-    $data = "method not implemented";
+    $data = array("response" => "method not implemented");
     echo json_encode($data);
     exit;
 }
@@ -81,7 +80,7 @@ if ($partnerPromotionId === 123 && $customerId === 3434) {
     exit;
 }
 else{
-    $data = "invalid POST payload";
+    $data = array("response" => "invalid POST payload");
     echo json_encode($data);
     exit;
 }
@@ -110,7 +109,6 @@ function decrementValue(){
     $stmt = $conn->prepare($sql);
     $stmt->execute();
 }
-
 
 /* SQL:
 CREATE TABLE PROPZ (
