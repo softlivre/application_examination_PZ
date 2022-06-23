@@ -43,7 +43,7 @@ if ($partnerPromotionId === 123 && $customerId === 3434) {
 
     $conn = new Conexao();
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $value = getCurrentValue();
+    $value = (int) getCurrentValue();    
 
     $data = array(  "partnerPromotionId" => "$partnerPromotionId",
                     "customerId" => "$customerId",
@@ -94,8 +94,8 @@ function decrementValue(){
 
 class Conexao extends PDO {
     private $dsn	  = 'pgsql:dbname=propz;host=127.0.0.1';
-    private $user 	  = 'xxx';
-    private $password = 'zzz';
+    private $user 	  = 'xx';
+    private $password = 'zz';
     public  $handle;  
     function __construct( ) {
         try	{
