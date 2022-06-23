@@ -1,4 +1,4 @@
-# Criando o código fonte do diagrama de sequencia - questão 1
+# Questão 1 - Criando o código fonte do diagrama de sequencia
 Este código fonte pode ser importado em serviços online como https://sequencediagram.org/
 para visualização.
 
