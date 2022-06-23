@@ -7,17 +7,36 @@ $request = $_SERVER['REQUEST_URI'];
 $method = $_SERVER['REQUEST_METHOD'];
 $arrayRequest = explode('/', $request);
 
+// create connection class
+class Conexao extends PDO {
+    private $dsn	  = 'pgsql:dbname=propz;host=127.0.0.1';
+    private $user 	  = 'xxx';
+    private $password = 'xxx';
+    public  $handle;  
+    function __construct( ) {
+        try	{
+            $dbh = parent::__construct( $this->dsn , $this->user , $this->password);
+            $this->handle = $dbh;				
+            return $this->handle; 
+        }catch ( PDOException $e ) {
+            // echo 'Conexão falhou: ' . $e->getMessage( ); //only used on debug
+            return false;
+        }
+    }
+}
+
+
 // in this example, we will only serve the following route:
 // api/v1/databases/3434/retail/user-promotions/redeem
 // full url: https://softlivre.com.br/provapropz/api/v1/databases/3434/retail/user-promotions/redeem
 
-$route1 = htmlentities($arrayRequest[3]);
-$route2 = htmlentities($arrayRequest[4]);
-$route3 = htmlentities($arrayRequest[5]);
-$route4 = htmlentities($arrayRequest[6]);
-$route5 = htmlentities($arrayRequest[7]);
-$route6 = htmlentities($arrayRequest[8]);
-$route7 = htmlentities($arrayRequest[9]);
+@$route1 = htmlspecialchars($arrayRequest[3]);
+@$route2 = htmlspecialchars($arrayRequest[4]);
+@$route3 = htmlspecialchars($arrayRequest[5]);
+@$route4 = htmlspecialchars($arrayRequest[6]);
+@$route5 = htmlspecialchars($arrayRequest[7]);
+@$route6 = htmlspecialchars($arrayRequest[8]);
+@$route7 = htmlspecialchars($arrayRequest[9]);
 
 if ($route1 !== "v1" || $route2 !== "databases" || $route3 !== "3434" || $route4 !== "retail" || $route5 !== "user-promotions" || $route6 !== "redeem") {
     $data = "route not implemented";
@@ -28,16 +47,16 @@ if ($route1 !== "v1" || $route2 !== "databases" || $route3 !== "3434" || $route4
 
 // if we get here, we have a valid route
 // we can now start to process the request
-
 // lets check the payload and method
+
 if ($method !== "POST"){
     $data = "method not implemented";
     echo json_encode($data);
     exit;
 }
 
-$partnerPromotionId = (int) htmlentities($_POST['partnerPromotionId']);
-$customerId = (int) htmlentities($_POST['customerId']);
+@$partnerPromotionId = (int) htmlspecialchars($_POST['partnerPromotionId']);
+@$customerId = (int) htmlspecialchars($_POST['customerId']);
 
 if ($partnerPromotionId === 123 && $customerId === 3434) {
 
@@ -62,10 +81,10 @@ if ($partnerPromotionId === 123 && $customerId === 3434) {
     exit;
 }
 else{
-    echo "invalid POST payload";
+    $data = "invalid POST payload";
+    echo json_encode($data);
+    exit;
 }
-
-
 
 // end of script. find below auxiliary functions and classes
 
@@ -92,22 +111,6 @@ function decrementValue(){
     $stmt->execute();
 }
 
-class Conexao extends PDO {
-    private $dsn	  = 'pgsql:dbname=propz;host=127.0.0.1';
-    private $user 	  = 'xx';
-    private $password = 'zz';
-    public  $handle;  
-    function __construct( ) {
-        try	{
-            $dbh = parent::__construct( $this->dsn , $this->user , $this->password);
-            $this->handle = $dbh;				
-            return $this->handle; 
-        }catch ( PDOException $e ) {
-            echo 'Conexão falhou: ' . $e->getMessage( );
-            return false;
-        }
-    }
-}
 
 /* SQL:
 CREATE TABLE PROPZ (
