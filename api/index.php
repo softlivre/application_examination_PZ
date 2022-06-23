@@ -1,12 +1,10 @@
 <?php
-/* ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL); */
 header('Content-Type: application/json; charset=utf-8');
 
 // our htaccess will always redirect here for routing
 // get the requested url
 $request = $_SERVER['REQUEST_URI'];
+$method = $_SERVER['REQUEST_METHOD'];
 $arrayRequest = explode('/', $request);
 
 // in this example, we will only serve the following route:
@@ -31,30 +29,41 @@ if ($route1 !== "v1" || $route2 !== "databases" || $route3 !== "3434" || $route4
 // if we get here, we have a valid route
 // we can now start to process the request
 
-$conn = new Conexao();
-$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+// lets check the payload and method
+if ($method !== "POST"){
+    $data = "method not implemented";
+    echo json_encode($data);
+    exit;
+}
 
-$value = getCurrentValue();
+$partnerPromotionId = (int) htmlentities($_POST['partnerPromotionId']);
+$customerId = (int) htmlentities($_POST['customerId']);
 
+if ($partnerPromotionId === 123 && $customerId === 3434) {
 
-if ($value >= 1){
-    // lets decrement the value, as the user the sale has been validated
-    decrementValue();
+    $conn = new Conexao();
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $value = getCurrentValue();
+
+    $data = array(  "partnerPromotionId" => "$partnerPromotionId",
+                    "customerId" => "$customerId",
+                    "value" => $value);
+
+    if ($value >= 1){
+        // lets decrement the value, as the user the sale has been validated
+        decrementValue();
+    }
+    else{
+        // for demonstration purposes, lets reset our counter to 5 on the DB when it reaches zero
+        resetValue();
+    }
+
+    echo json_encode($data);
+    exit;
 }
 else{
-    // for demonstration purposes, lets reset our counter to 10 on the DB
-    resetValue();
+    echo "invalid POST payload";
 }
-
-
-$data = array("partnerPromotionId" => "123",
-"customerId" => "3434",
-"value" => $value);
-
-echo json_encode($data);
-
-
-
 
 
 
@@ -62,7 +71,7 @@ echo json_encode($data);
 
 function resetValue(){
     global $conn;
-    $sql = "UPDATE propz SET propzcounter = 10 WHERE id = 1";
+    $sql = "UPDATE propz SET propzcounter = 5 WHERE id = 1";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
 }
@@ -85,8 +94,8 @@ function decrementValue(){
 
 class Conexao extends PDO {
     private $dsn	  = 'pgsql:dbname=propz;host=127.0.0.1';
-    private $user 	  = 'xx';
-    private $password = 'xx';
+    private $user 	  = 'xxx';
+    private $password = 'zzz';
     public  $handle;  
     function __construct( ) {
         try	{
@@ -100,13 +109,8 @@ class Conexao extends PDO {
     }
 }
 
-/*
-
+/* SQL:
 CREATE TABLE PROPZ (
 id integer NOT NULL,
 propzcounter integer NOT NULL)
-
-
-
-
 */
