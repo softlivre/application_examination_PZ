@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: application/json; charset=utf-8');
 
 // our htaccess will always redirect here for routing
 // get the requested url
@@ -19,11 +20,19 @@ $route7 = $arrayRequest[9];
 $routeLevels = count ($arrayRequest);
 
 if ($route1 !== "v1" || $route2 !== "databases" || $route3 !== "3434" || $route4 !== "retail" || $route5 !== "user-promotions" || $route6 !== "redeem") {
-    echo "route not implemented";
+    $data = "route not implemented";
+    echo json_encode($data);
     sleep(1);
     exit;
 }
 
 // if we get here, we have a valid route
 // we can now start to process the request
-echo "route implemented";
+
+$value = rand();
+
+$data = array("partnerPromotionId" => "123",
+"customerId" => "3434",
+"value" => $value);
+
+echo json_encode($data);
